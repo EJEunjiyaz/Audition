@@ -53,7 +53,6 @@ def game():
 
 
 
-
 import network
 from time import sleep
 import json
@@ -68,33 +67,41 @@ url = "https://exceed.superposition.pknn.dev/data/200"
 data = {"1":100}
 headers = {"content-type":"application/json"}
 
+
+
+#############################################################
+first = True
+
 if True:
-  if not station.isconnected():
-    station.connect(ssid, pwd)
-    print('Connecting...')
-    sleep(3)
-    if station.isconnected():
-      print('connected')
-  js = json.dumps({"data":data})
-  print(data)
-  r = urequests.put(url, data=js, headers=headers)
-  results = r.json()
-  print(results)
-  sleep(2)
+  while first == True:
+    if not station.isconnected():
+      station.connect(ssid, pwd)
+      print('Connecting...')
+      sleep(3)
+      if station.isconnected():
+        print('connected')
+    js = json.dumps({"data":data})
+    print(data)
+    r = urequests.post(url, data=js, headers=headers)
+    results = r.json()
+    print(results)
+    first = False
+    sleep(2)
+    data = {'2':200}
 
-  if not station.isconnected():
-    station.connect(ssid, pwd)
-    print('Connecting...')
-    sleep(3)
-    if station.isconnected():
-      print('connected')
-  js = json.dumps({"data":data})
-  print(data)
-  r = urequests.put(url, data=js, headers=headers)
-  results = r.json()
-  print(results)
-  sleep(2)
-
+  if first == False:
+    if not station.isconnected():
+      station.connect(ssid, pwd)
+      print('Connecting...')
+      sleep(3)
+      if station.isconnected():
+        print('connected')
+    js = json.dumps({"data":data})
+    print(data)
+    r = urequests.put(url, data=js, headers=headers)
+    results = r.json()
+    print(results)
+    sleep(2)
 
 
 
