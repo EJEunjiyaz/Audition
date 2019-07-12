@@ -2,7 +2,11 @@ from machine import Pin, ADC, DAC, PWM
 from time import sleep
 from _thread import start_new_thread as thread
 from random import randint
+import network
+import json
+import urequests
 
+#################################################### status
 R = Pin(21, Pin.OUT)
 G = Pin(19, Pin.OUT)
 B = Pin(18, Pin.OUT)
@@ -39,9 +43,9 @@ def Force_Button():
       start_rgb_red()
     if a == int(1):
       start_rgb_green()
-    print(a)
+    #print(a)
     sleep(0.1)
-
+################################################################
 led_up = Pin(0, Pin.OUT)
 led_down = Pin(2, Pin.OUT)
 led_rig = Pin(4, Pin.OUT)
@@ -101,7 +105,7 @@ sw.irq(trigger=Pin.IRQ_FALLING, handler=button_pressed)
 
 
 "Buzzer code"
-#buzzer = PWM(Pin(25))
+buzzer = PWM(Pin(25))
 
 def start_buzzer(value):
     buzzer.freq(value)
@@ -115,6 +119,7 @@ R = Pin(21, Pin.OUT)
 G = Pin(19, Pin.OUT)
 B = Pin(18, Pin.OUT)
 
+'''
 def start_rgb_red():
     R.value(1)
     G.value(0)
@@ -124,7 +129,7 @@ def start_rgb_green():
     R.value(0)
     G.value(1)
     B.value(0)
-
+'''
 def start_rgb_blue():
     R.value(0)
     G.value(0)
@@ -158,22 +163,26 @@ datastat = {}
 count_game = 0
 first_game = True
 http_dict = {}
-day = 12
+day = 13
 
 def check_start():
     while True:
         if check_button() == True:
         	start_val = True
 
+def dayplus(day):
+  return day+1
+
 def game(htp_dct):
+    global day
     stop_rgb()
     temp_lst = []
     while len(temp_lst) != 10:
         print(temp_lst)
         check = check_joystick(cx,cy)
-        light_on = randint(1,4)
+        light_on = 1
         light_dict[light_on].value(1)
-        sleep(3)
+        sleep(0.5)
         if check_joystick(cx, cy) != 0:
             if check_joystick(cx, cy) == light_on:
                 temp_lst.append(True)
@@ -184,19 +193,89 @@ def game(htp_dct):
         else:
             temp_lst.append(False)
             light_dict[light_on].value(0)
-
-    http_dict[str(day)] = sum(temp_lst)
-    day += 1
+    http_dict[str(day)] = (sum(temp_lst)/len(temp_lst))*100
     print(http_dict)
+    day = dayplus(day)
+    print(day)
+    end_end()
 
-
+'''
 def data():
     datastat.update(http_dict)
-
-def end():
+'''
+def end_end():
     start_val = False
+    update(str(day), int(http_dict[list(http_dict.keys())[-1]]))
 	#display score
 	#sent netPRO to server
     #data.update({count_game:count_correct})
 
+
+##################################################################################
+
+
+ssid = 'exceed16_8'
+pwd = '12345678'
+station = network.WLAN(network.STA_IF)
+station.active(True)
+
+url2 = "https://exceed.superposition.pknn.dev/data/kenmuayMC"
+url1 = "https://exceed.superposition.pknn.dev/data/kenmuaySTAT"
+data = {"9":60,"10":40,"11":0,"12":80}
+headers = {"content-type":"application/json"}
+
+def send():
+  if not station.isconnected():
+    station.connect(ssid, pwd)
+    print('Connecting...')
+    sleep(3)
+    if station.isconnected():
+      print('connected')
+  js = json.dumps({"data":data})
+  print(data)
+  r = urequests.post(url1, data=js, headers=headers)
+  results = r.json()
+  print(results)
+  sleep(2)
+
+def receive():
+  if not station.isconnected():
+    station.connect(ssid, pwd)
+    print('Connecting...')
+    sleep(3)
+    if station.isconnected():
+      print('connected')
+  js = json.dumps({"data":data})
+  print(data)
+  r = urequests.get(url2)
+  results = r.json()
+  print(results)
+  sleep(2)
+
+def update(key, data):
+  if not station.isconnected():
+    station.connect(ssid, pwd)
+    print('Connecting...')
+    sleep(3)
+    if station.isconnected():
+      print('connected')
+
+  r = urequests.get(url1)
+  results = r.json()
+  print(results)
+  results[key] = data
+  print(results)
+  r = urequests.post(url1, data=json.dumps({"data":results}), headers=headers)
+  #print(r.json)
+  print("end")
+
+#thread(send(),())
+#thread(receive(),())
+
+
+
+
+#################################################################################
+thread(game(http_dict),())
 thread(Force_Button(),())
+#thread(update('day', http_dict),())
