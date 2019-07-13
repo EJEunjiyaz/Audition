@@ -60,7 +60,7 @@ def check_joystick(dx, dy):
     x = joystick(dx)
     y = joystick(dy)
     direction = 0
-    if x < 40 and 54 < y < 64:
+    if x < 14 and 54 < y < 64:
         direction = 1
     elif 113 < x and 54 < y < 64:
         direction = 2
@@ -236,69 +236,65 @@ data = {"9":60,"10":40,"11":0,"12":80}
 headers = {"content-type":"application/json"}
 
 def send():
-    while not station.isconnected():
-      if not station.isconnected():
-        station.connect(ssid, pwd)
-        print('Connecting...')
-        sleep(1.5)
-        if station.isconnected():
-          print('connected')
-      js = json.dumps({"data":data})
-      print(data)
-      r = urequests.post(url1, data=js, headers=headers)
-      results = r.json()
-      print(results)
-      sleep(0.5)
+  if not station.isconnected():
+    station.connect(ssid, pwd)
+    print('Connecting...')
+    sleep(1.5)
+    if station.isconnected():
+      print('connected')
+  js = json.dumps({"data":data})
+  print(data)
+  r = urequests.post(url1, data=js, headers=headers)
+  results = r.json()
+  print(results)
+  sleep(0.5)
 
 def receiveMC():
-    while not station.isconnected():
-      if not station.isconnected():
-        station.connect(ssid, pwd)
-        print('Connecting...')
-        sleep(3.5)
-        if station.isconnected():
-          print('connected')
-      js = json.dumps({"data":data})
-      print(data)
-      r = urequests.get(url2)
-      results = r.json()
-      print(results)
-      sleep(0.5)
-      return int(results['max_count'])
+  if not station.isconnected():
+    station.connect(ssid, pwd)
+    print('Connecting...')
+    sleep(3.5)
+    if station.isconnected():
+      print('connected')
+  js = json.dumps({"data":data})
+  print(data)
+  r = urequests.get(url2)
+  results = r.json()
+  print(results)
+  sleep(0.5)
+  return int(results['max_count'])
 
 def receiveDATE():
-    while not station.isconnected():
-      if not station.isconnected():
-        station.connect(ssid, pwd)
-        print('Connecting...')
-        sleep(2.5)
-        if station.isconnected():
-          print('connected')
-      js = json.dumps({"data":data})
-      print(data)
-      r = urequests.get(url3)
-      results = r.json()
-      print(results)
-      sleep(0.5)
-      return int(results['date'])
+  if not station.isconnected():
+    station.connect(ssid, pwd)
+    print('Connecting...')
+    sleep(2.5)
+    if station.isconnected():
+      print('connected')
+  js = json.dumps({"data":data})
+  print(data)
+  r = urequests.get(url3)
+  results = r.json()
+  print(results)
+  sleep(0.5)
+  return int(results['date'])
 
 def update(key, data):
-    while not station.isconnected():
-      if not station.isconnected():
-        station.connect(ssid, pwd)
-        print('Connecting...')
-        sleep(1)
-        if station.isconnected():
-          print('connected')
+  if not station.isconnected():
+    station.connect(ssid, pwd)
+    print('Connecting...')
+    sleep(0.5)
+    if station.isconnected():
+      print('connected')
 
-      r = urequests.get(url1)
-      results = r.json()
-      print(results)
-      results[key] = data
-      print(results)
-      r = urequests.post(url1, data=json.dumps({"data":results}), headers=headers)
-      #print(r.json)
-      print("end")
+  r = urequests.get(url1)
+  results = r.json()
+  print(results)
+  results[key] = data
+  print(results)
+  r = urequests.post(url1, data=json.dumps({"data":results}), headers=headers)
+  #print(r.json)
+  print("end")
 
 
 
@@ -306,7 +302,7 @@ def update(key, data):
 #thread(receive(),())
 
 
-day = 9  #receiveDATE()
+day = 10  #receiveDATE()
 
 #################################################################################
 
