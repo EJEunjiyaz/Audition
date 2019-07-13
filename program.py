@@ -1,5 +1,5 @@
 from machine import Pin, ADC, DAC, PWM
-from time import sleep
+from time import sleep, time
 from _thread import start_new_thread as thread
 from random import randint
 import network
@@ -24,12 +24,12 @@ def Force_Button():
     sleep(0.1)
 ################################################################
 led_up = Pin(4, Pin.OUT)
-led_down = Pin(0, Pin.OUT)
+led_down = Pin(23, Pin.OUT)
 led_rig = Pin(2, Pin.OUT)
-led_lef = Pin(23, Pin.OUT)
+led_lef = Pin(0, Pin.OUT)
 
 light_dict = {1: led_lef,
-            2:led_down,
+            2:led_rig,
             3:led_up,
             4:led_down}
 
@@ -159,22 +159,43 @@ def game(htp_dct):
     start_rgb_red()
     temp_lst = []
     tim = receiveMC()
+    print(tim)
     while len(temp_lst) != tim:
         print(temp_lst)
         check = check_joystick(cx,cy)
+        sleep(0.8)
         light_on = randint(1,4)
         light_dict[light_on].value(1)
-        sleep(1)
-        if check_joystick(cx, cy) != 0:
-            if check_joystick(cx, cy) == light_on:
-                temp_lst.append(True)
-                light_dict[light_on].value(0)
+        time_2 = time()
+        while time() - time_2 <= 3 :
+            if check_joystick(cx, cy) != 0:
+                if check_joystick(cx, cy) == light_on:
+                    temp_lst.append(True)
+                    light_dict[light_on].value(0)
+                    break
+                else:
+                    temp_lst.append(False)
+                    light_dict[light_on].value(0)
+                    break
+            else:
+                pass
+
+        if time() - time_2 > 3:
+            temp_lst.append(False)
+            light_dict[light_on].value(0)
+            '''
+                else:
+                    temp_lst.append(False)
+                    light_dict[light_on].value(0)
+                    break
             else:
                 temp_lst.append(False)
                 light_dict[light_on].value(0)
-        else:
-            temp_lst.append(False)
-            light_dict[light_on].value(0)
+                break
+                '''
+        time_2 = time()
+
+
     http_dict[str(day)] = (sum(temp_lst)/len(temp_lst))*100
     print(http_dict)
     day = dayplus(day)
