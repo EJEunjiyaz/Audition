@@ -64,7 +64,7 @@ def check_joystick(dx, dy):
         direction = 1
     elif 113 < x and 54 < y < 64:
         direction = 2
-    elif 54 < x < 64 and y < 13:
+    elif 54 < x < 64 and y < 40:
         direction = 3
     elif 54 < x < 64 and 113 < y:
         direction = 4
@@ -253,7 +253,7 @@ def receiveMC():
   if not station.isconnected():
     station.connect(ssid, pwd)
     print('Connecting...')
-    sleep(0.5)
+    sleep(1.5)
     if station.isconnected():
       print('connected')
   js = json.dumps({"data":data})
@@ -268,7 +268,7 @@ def receiveDATE():
   if not station.isconnected():
     station.connect(ssid, pwd)
     print('Connecting...')
-    sleep(0.5)
+    sleep(1.5)
     if station.isconnected():
       print('connected')
   js = json.dumps({"data":data})
