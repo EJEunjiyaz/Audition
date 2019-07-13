@@ -60,11 +60,11 @@ def check_joystick(dx, dy):
     x = joystick(dx)
     y = joystick(dy)
     direction = 0
-    if x < 14 and 54 < y < 64:
+    if x < 40 and 54 < y < 64:
         direction = 1
     elif 113 < x and 54 < y < 64:
         direction = 2
-    elif 54 < x < 64 and y < 40:
+    elif 54 < x < 64 and y < 47:
         direction = 3
     elif 54 < x < 64 and 113 < y:
         direction = 4
@@ -224,7 +224,7 @@ def end_end():
 ##################################################################################
 
 
-ssid = 'exceed16_8'
+ssid = 'exceed16_5'
 pwd = '12345678'
 station = network.WLAN(network.STA_IF)
 station.active(True)
@@ -236,65 +236,69 @@ data = {"9":60,"10":40,"11":0,"12":80}
 headers = {"content-type":"application/json"}
 
 def send():
-  if not station.isconnected():
-    station.connect(ssid, pwd)
-    print('Connecting...')
-    sleep(0.5)
-    if station.isconnected():
-      print('connected')
-  js = json.dumps({"data":data})
-  print(data)
-  r = urequests.post(url1, data=js, headers=headers)
-  results = r.json()
-  print(results)
-  sleep(0.5)
+    while not station.isconnected():
+      if not station.isconnected():
+        station.connect(ssid, pwd)
+        print('Connecting...')
+        sleep(1.5)
+        if station.isconnected():
+          print('connected')
+      js = json.dumps({"data":data})
+      print(data)
+      r = urequests.post(url1, data=js, headers=headers)
+      results = r.json()
+      print(results)
+      sleep(0.5)
 
 def receiveMC():
-  if not station.isconnected():
-    station.connect(ssid, pwd)
-    print('Connecting...')
-    sleep(1.5)
-    if station.isconnected():
-      print('connected')
-  js = json.dumps({"data":data})
-  print(data)
-  r = urequests.get(url2)
-  results = r.json()
-  print(results)
-  sleep(0.5)
-  return int(results['max_count'])
+    while not station.isconnected():
+      if not station.isconnected():
+        station.connect(ssid, pwd)
+        print('Connecting...')
+        sleep(3.5)
+        if station.isconnected():
+          print('connected')
+      js = json.dumps({"data":data})
+      print(data)
+      r = urequests.get(url2)
+      results = r.json()
+      print(results)
+      sleep(0.5)
+      return int(results['max_count'])
 
 def receiveDATE():
-  if not station.isconnected():
-    station.connect(ssid, pwd)
-    print('Connecting...')
-    sleep(1.5)
-    if station.isconnected():
-      print('connected')
-  js = json.dumps({"data":data})
-  print(data)
-  r = urequests.get(url3)
-  results = r.json()
-  print(results)
-  sleep(0.5)
-  return int(results['date'])
+    while not station.isconnected():
+      if not station.isconnected():
+        station.connect(ssid, pwd)
+        print('Connecting...')
+        sleep(2.5)
+        if station.isconnected():
+          print('connected')
+      js = json.dumps({"data":data})
+      print(data)
+      r = urequests.get(url3)
+      results = r.json()
+      print(results)
+      sleep(0.5)
+      return int(results['date'])
 
 def update(key, data):
-  if not station.isconnected():
-    station.connect(ssid, pwd)
-    print('Connecting...')
-    sleep(0.5)
-    if station.isconnected():
-      print('connected')
+    while not station.isconnected():
+      if not station.isconnected():
+        station.connect(ssid, pwd)
+        print('Connecting...')
+        sleep(1)
+        if station.isconnected():
+          print('connected')
 
-  r = urequests.get(url1)
-  results = r.json()
-  print(results)
-  results[key] = data
-  print(results)
-  r = urequests.post(url1, data=json.dumps({"data":results}), headers=headers)
-  #print(r.json)
-  print("end")
+      r = urequests.get(url1)
+      results = r.json()
+      print(results)
+      results[key] = data
+      print(results)
+      r = urequests.post(url1, data=json.dumps({"data":results}), headers=headers)
+      #print(r.json)
+      print("end")
 
 
 
@@ -302,7 +306,7 @@ def update(key, data):
 #thread(receive(),())
 
 
-day = receiveDATE()
+day = 9  #receiveDATE()
 
 #################################################################################
 
