@@ -60,7 +60,7 @@ def check_joystick(dx, dy):
     x = joystick(dx)
     y = joystick(dy)
     direction = 0
-    if x < 14 and 54 < y < 64:
+    if x < 47 and 54 < y < 64:
         direction = 1
     elif 113 < x and 54 < y < 64:
         direction = 2
@@ -163,11 +163,11 @@ def game(htp_dct):
     while len(temp_lst) != tim:
         print(temp_lst)
         check = check_joystick(cx,cy)
-        sleep(0.8)
+        sleep(0.3)
         light_on = randint(1,4)
         light_dict[light_on].value(1)
         time_2 = time()
-        while time() - time_2 <= 3 :
+        while time() - time_2 <= 2 :
             if check_joystick(cx, cy) != 0:
                 if check_joystick(cx, cy) == light_on:
                     temp_lst.append(True)
@@ -180,7 +180,7 @@ def game(htp_dct):
             else:
                 pass
 
-        if time() - time_2 > 3:
+        if time() - time_2 > 2:
             temp_lst.append(False)
             light_dict[light_on].value(0)
             '''
@@ -194,6 +194,7 @@ def game(htp_dct):
                 break
                 '''
         time_2 = time()
+        sleep(0.4)
 
 
     http_dict[str(day)] = (sum(temp_lst)/len(temp_lst))*100
@@ -302,7 +303,7 @@ def update(key, data):
 #thread(receive(),())
 
 
-day = 10  #receiveDATE()
+day = receiveDATE()
 
 #################################################################################
 
